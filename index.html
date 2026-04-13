@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Endure — Buy Once, Buy Right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --bg:             #EFE9DF;
+      --bg-card:        #F9F5EE;
+      --bg-nav:         #EFE9DFEE;
+      --bg-elevated:    #E4DDD0;
+      --bg-tag:         #DDD6C6;
+      --text-primary:   #1A1714;
+      --text-secondary: #5C5650;
+      --text-muted:     #9A9088;
+      --accent:         #AA6B18;
+      --accent-hover:   #C07A20;
+      --accent-subtle:  #EAD5A8;
+      --border:         #C6BFB0;
+      --border-light:   #DDD6CA;
+      --shadow-sm:      0 1px 3px rgba(26,23,20,0.08);
+      --shadow-md:      0 4px 14px rgba(26,23,20,0.13);
+      --shadow-lg:      0 12px 32px rgba(26,23,20,0.17);
+
+      /* Badge palette */
+      --b-guarantee:    #276A4A;
+      --b-repair:       #1B4A72;
+      --b-fiber:        #7A5318;
+      --b-origin:       #4A3728;
+      --b-bcorp:        #3A5C3A;
+      --b-nyc:          #5C3C2E;
+
+      --font-display:   'Cormorant Garamond', Georgia, serif;
+      --font-body:      'DM Mono', 'Courier New', monospace;
+      --font-ui:        'Oswald', sans-serif;
+
+      --radius-sm:      3px;
+      --radius-md:      8px;
+      --nav-h:          58px;
+      --bnav-h:         64px;
+    }
+
+    [data-theme="dark"] {
+      --bg:             #110F0D;
+      --bg-card:        #1B1916;
+      --bg-nav:         #110F0DEE;
+      --bg-elevated:    #221F1B;
+      --bg-tag:         #2A2620;
+      --text-primary:   #EFE9DF;
+      --text-secondary: #A09888;
+      --text-muted:     #6A6058;
+      --accent:         #C88030;
+      --accent-hover:   #E09040;
+      --accent-subtle:  #3A2610;
+      --border:         #2E2924;
+      --border-light:   #231E19;
+
+      --b-guarantee:    #52B788;
+      --b-repair:       #4A8EBE;
+      --b-fiber:        #D4A84A;
+      --b-origin:       #C8A880;
+      --b-bcorp:        #7EC47E;
+      --b-nyc:          #C8906A;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Paper-grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ===== TOP NAV ===== */
+    .top-nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      background: var(--bg-nav);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      user-select: none;
+    }
+    .nav-logo em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .nav-actions { display: flex; align-items: center; gap: 4px; }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 9px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-btn:hover { color: var(--text-primary); background: var(--bg-elevated); }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed;
+      inset: auto 0 0 0;
+      height: var(--bnav-h);
+      background: var(--bg-nav);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 100;
+    }
+
+    .bnav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 28px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      font-family: var(--font-ui);
+      font-size: 9.5px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .bnav-item.active { color: var(--accent); }
+    .bnav-icon { line-height: 1; }
+
+    /* ===== LAYOUT ===== */
+    .app-main {
+      padding-top: var(--nav-h);
+      padding-bottom: calc(var(--bnav-h) + 12px);
+      min-height: 100vh;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 44px 24px 36px;
+      border-bottom: 1px solid var(--border-light);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .eyebrow {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .hero-hed {
+      font-family: var(--font-display);
+      font-size: clamp(58px, 16vw, 78px);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+    .hero-hed em { font-style: italic; color: var(--accent); }
+
+    .hero-sub {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .hero-body {
+      font-size: 11px;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      max-width: 360px;
+    }
+
+    .hero-stats {
+      display: flex;
+      margin-top: 28px;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      padding: 18px 0;
+    }
+    .hero-stat {
+      flex: 1;
+      padding: 0 14px;
+      border-right: 1px solid var(--border-light);
+    }
+    .hero-stat:first-child { padding-left: 0; }
+    .hero-stat:last-child { border-right: none; }
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-family: var(--font-ui);
+      font-size: 8.5px;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* ===== SECTION HEADERS ===== */
+    .sec-hdr {
+      padding: 30px 24px 14px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .sec-hdr-group {}
+    .sec-eyebrow {
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .sec-title em { font-style: italic; color: var(--accent); }
+
+    .see-all-btn {
+      font-family: var(--font-ui);
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .see-all-btn:hover { opacity: 0.7; }
+
+    /* ===== FEATURED SCROLL ===== */
+    .feat-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 4px 24px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .feat-scroll::-webkit-scrollbar { display: none; }
+
+    .feat-card {
+      flex-shrink: 0;
+      width: 186px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      cursor: pointer;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border); }
+    .feat-card:hover::after { transform: scaleX(1); }
+
+    .feat-card-origin {
+      font-family: var(--font-ui);
+      font-size: 8.5px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .feat-card-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: 7px;
+    }
+    .feat-card-mat {
+      font-size: 9.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    /* ===== DURABILITY ===== */
+    .dura {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .dia {
+      font-size: 7.5px;
+      color: var(--border);
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .dia.on { color: var(--accent); }
+    .dura-lbl {
+      font-family: var(--font-ui);
+      font-size: 7.5px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-left: 5px;
+    }
+
+    /* ===== BRAND CARDS ===== */
+    .brand-wrap {
+      padding: 0 16px;
+    }
+    .brand-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.22s, border-color 0.22s;
+      max-width: 448px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 10px;
+    }
+    .brand-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 18px; bottom: 18px;
+      width: 2px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+    .brand-card:hover { box-shadow: var(--shadow-md); border-color: var(--border); }
+    .brand-card:hover::before { opacity: 1; }
+
+    .bc-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+      gap: 8px;
+    }
+    .bc-name {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .bc-origin {
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--bg-tag);
+      padding: 3px 8px;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .bc-tagline {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    .bc-material {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.65;
+    }
+    .bc-material strong { font-weight: 500; color: var(--text-primary); }
+    .bc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .bc-price {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+    .badge {
+      font-family: var(--font-ui);
+      font-size: 8.5px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border-radius: 2px;
+      border: 1px solid currentColor;
+      white-space: nowrap;
+    }
+    .badge-lifetime-guarantee { color: var(--b-guarantee); background: color-mix(in srgb, var(--b-guarantee) 8%, transparent); }
+    .badge-repair-program     { color: var(--b-repair);    background: color-mix(in srgb, var(--b-repair) 8%, transparent); }
+    .badge-natural-fibers     { color: var(--b-fiber);     background: color-mix(in srgb, var(--b-fiber) 8%, transparent); }
+    .badge-made-in-usa,
+    .badge-made-in-uk,
+    .badge-made-in-germany,
+    .badge-made-in-nz         { color: var(--b-origin);    background: color-mix(in srgb, var(--b-origin) 8%, transparent); }
+    .badge-b-corp             { color: var(--b-bcorp);     background: color-mix(in srgb, var(--b-bcorp) 8%, transparent); }
+    .badge-nyc-made           { color: var(--b-nyc);       background: color-mix(in srgb, var(--b-nyc) 8%, transparent); }
+
+    .shop-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #111009;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .shop-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .shop-btn:active { transform: translateY(0); }
+
+    /* ===== SPOTLIGHT ===== */
+    .spot-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: start;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin: 0 16px 10px;
+      max-width: 448px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 10px;
+      transition: box-shadow 0.22s;
+    }
+    .spot-card:hover { box-shadow: var(--shadow-md); }
+    .spot-brand {
+      font-family: var(--font-ui);
+      font-size: 8.5px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+    .spot-name {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 7px;
+    }
+    .spot-why {
+      font-size: 10px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .spot-link {
+      font-family: var(--font-ui);
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .spot-link:hover { border-color: var(--accent); }
+    .spot-price {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-primary);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .spot-cpw {
+      font-size: 8.5px;
+      color: var(--text-muted);
+      text-align: right;
+      line-height: 1.45;
+      margin-top: 3px;
+      max-width: 90px;
+    }
+
+    /* ===== FILTERS ===== */
+    .filters-wrap {
+      position: sticky;
+      top: var(--nav-h);
+      background: var(--bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+      z-index: 50;
+      padding: 10px 16px 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .filter-row {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 10px;
+      align-items: center;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-lbl {
+      font-family: var(--font-ui);
+      font-size: 8.5px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0 2px;
+    }
+    .chip {
+      flex-shrink: 0;
+      padding: 5px 11px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-ui);
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.on { background: var(--accent); border-color: var(--accent); color: #111009; }
+
+    .browse-count {
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 16px 10px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .no-results {
+      display: none;
+      padding: 64px 24px;
+      text-align: center;
+    }
+    .no-results.show { display: block; }
+    .no-results-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* ===== BROWSE HEADER ===== */
+    .browse-hdr {
+      padding: 28px 24px 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ===== SEARCH OVERLAY ===== */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      padding: 20px 20px 24px;
+      padding-top: calc(var(--nav-h) + 12px);
+    }
+    .search-overlay.show { display: flex; }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .search-ico { color: var(--accent); flex-shrink: 0; }
+    .search-inp {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--text-primary);
+    }
+    .search-inp::placeholder { color: var(--text-muted); }
+    .search-x {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      line-height: 1;
+    }
+    .search-results-list { overflow-y: auto; flex: 1; }
+    .sr-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: padding-left 0.18s;
+    }
+    .sr-item:hover { padding-left: 8px; }
+    .sr-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .sr-meta { font-size: 9.5px; color: var(--text-muted); margin-top: 2px; }
+    .sr-arrow { color: var(--accent); font-size: 14px; }
+
+    /* ===== GUIDE ===== */
+    .guide-hero {
+      padding: 40px 24px 30px;
+      border-bottom: 1px solid var(--border-light);
+      animation: fadeUp 0.4s ease both;
+    }
+    .guide-hero-lbl {
+      font-family: var(--font-ui);
+      font-size: 9.5px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .guide-hero-h {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .guide-hero-h em { font-style: italic; color: var(--accent); }
+    .guide-hero-p {
+      font-size: 11px;
+      line-height: 1.95;
+      color: var(--text-secondary);
+    }
+
+    .guide-block {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-light);
+      max-width: 448px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .g-lbl {
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .g-h {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .g-p {
+      font-size: 10.5px;
+      line-height: 1.95;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .formula {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: var(--text-primary);
+      text-align: center;
+      font-style: italic;
+    }
+    .formula span { color: var(--accent); font-weight: 500; }
+
+    .w-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .w-item {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+    }
+    .w-item.full { grid-column: span 2; }
+    .w-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .w-name {
+      font-family: var(--font-ui);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .w-desc { font-size: 9.5px; color: var(--text-secondary); line-height: 1.5; }
+
+    .crit-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+    .crit-item { display: flex; gap: 12px; align-items: flex-start; }
+    .crit-ico {
+      width: 30px;
+      height: 30px;
+      background: var(--accent-subtle);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .crit-ttl {
+      font-family: var(--font-ui);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .crit-desc { font-size: 9.5px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim { animation: fadeUp 0.35s ease both; }
+    .brand-card:nth-child(1) { animation: fadeUp 0.3s 0.04s ease both; }
+    .brand-card:nth-child(2) { animation: fadeUp 0.3s 0.09s ease both; }
+    .brand-card:nth-child(3) { animation: fadeUp 0.3s 0.14s ease both; }
+    .brand-card:nth-child(4) { animation: fadeUp 0.3s 0.19s ease both; }
+    .brand-card:nth-child(5) { animation: fadeUp 0.3s 0.24s ease both; }
+    .brand-card:nth-child(6) { animation: fadeUp 0.3s 0.29s ease both; }
+    .brand-card:nth-child(7) { animation: fadeUp 0.3s 0.34s ease both; }
+    .brand-card:nth-child(n+8) { animation: fadeUp 0.3s 0.39s ease both; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 480px) {
+      .hero, .guide-hero { max-width: 480px; margin-left: auto; margin-right: auto; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ===== TOP NAV ===== -->
+<nav class="top-nav">
+  <div class="nav-logo">End<em>u</em>re</div>
+  <div class="nav-actions">
+    <button class="nav-btn" onclick="openSearch()" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="nav-btn" onclick="toggleTheme()" aria-label="Toggle theme" id="themeBtn">
+      <svg id="sunIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="moonIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== SEARCH OVERLAY ===== -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-bar">
+    <svg class="search-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-inp" type="text" placeholder="Search brands…" id="searchInp" oninput="doSearch(this.value)" autocomplete="off">
+    <button class="search-x" onclick="closeSearch()">✕</button>
+  </div>
+  <div class="search-results-list" id="searchRes"></div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main class="app-main">
+
+  <!-- ========= HOME ========= -->
+  <section class="section active" id="homeSection">
+
+    <div class="hero">
+      <div class="eyebrow">Curated for longevity</div>
+      <h1 class="hero-hed">Buy<br><em>Once.</em><br>Buy Right.</h1>
+      <p class="hero-sub">Clothing that earns its keep.</p>
+      <p class="hero-body">We surface the brands that build things to last — natural fibers, honest construction, real repair programs. Stop replacing. Start investing.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="stat-val">10</div><div class="stat-lbl">Brands</div></div>
+        <div class="hero-stat"><div class="stat-val">4</div><div class="stat-lbl">Categories</div></div>
+        <div class="hero-stat"><div class="stat-val">∞</div><div class="stat-lbl">Lifespan</div></div>
+      </div>
+    </div>
+
+    <div class="sec-hdr">
+      <div class="sec-hdr-group">
+        <div class="sec-eyebrow">Editor's picks</div>
+        <h2 class="sec-title">Featured <em>Brands</em></h2>
+      </div>
+      <button class="see-all-btn" onclick="showSection('browse')">View All →</button>
+    </div>
+
+    <div class="feat-scroll" id="featScroll"></div>
+
+    <div class="sec-hdr">
+      <div class="sec-hdr-group">
+        <div class="sec-eyebrow">Worth every penny</div>
+        <h2 class="sec-title">Product <em>Spotlight</em></h2>
+      </div>
+    </div>
+
+    <div id="spotlightWrap"></div>
+
+  </section>
+
+  <!-- ========= BROWSE ========= -->
+  <section class="section" id="browseSection">
+
+    <div class="browse-hdr">
+      <div class="sec-eyebrow">Complete directory</div>
+      <h2 class="sec-title" style="font-size:34px;font-family:var(--font-display);font-weight:400;">All <em style="font-style:italic;color:var(--accent)">Brands</em></h2>
+    </div>
+
+    <div class="filters-wrap">
+      <div class="filter-row">
+        <span class="filter-lbl">Category</span>
+        <button class="chip on" data-cat="all">All</button>
+        <button class="chip" data-cat="outerwear">Outerwear</button>
+        <button class="chip" data-cat="basics">Basics</button>
+        <button class="chip" data-cat="workwear">Workwear</button>
+        <button class="chip" data-cat="footwear">Footwear</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-lbl">Price</span>
+        <button class="chip on" data-price="all">All</button>
+        <button class="chip" data-price="budget">Budget</button>
+        <button class="chip" data-price="mid">Mid-Range</button>
+        <button class="chip" data-price="investment">Investment</button>
+      </div>
+    </div>
+    <div class="browse-count" id="browseCount">Showing 10 brands</div>
+
+    <div class="brand-wrap" id="brandGrid"></div>
+    <div class="no-results" id="noResults"><p class="no-results-text">No brands match<br>these filters.</p></div>
+
+  </section>
+
+  <!-- ========= GUIDE ========= -->
+  <section class="section" id="guideSection">
+
+    <div class="guide-hero">
+      <div class="guide-hero-lbl">Philosophy</div>
+      <h2 class="guide-hero-h">Build Your<br><em>Wardrobe</em></h2>
+      <p class="guide-hero-p">The buy-it-for-life philosophy isn't about spending more — it's about spending smarter. A $300 jacket worn daily for 15 years costs less per wear than a $60 jacket replaced every two seasons.</p>
+    </div>
+
+    <div class="guide-block">
+      <div class="g-lbl">The Math</div>
+      <h3 class="g-h">Cost Per Wear</h3>
+      <p class="g-p">Every purchase has a true cost per wear (CPW). A cheap item worn rarely costs far more per use than a durable piece worn constantly.</p>
+      <div class="formula"><span>CPW</span> = Purchase Price ÷ Total Wears</div>
+      <p class="g-p">
+        A $40 fast-fashion tee lasting 30 washes = <strong style="color:var(--text-primary)">$1.33 / wear</strong><br>
+        A $115 Merz b. Schwanen tee, 500+ wears = <strong style="color:var(--accent)">$0.23 / wear</strong>
+      </p>
+    </div>
+
+    <div class="guide-block">
+      <div class="g-lbl">Foundation Pieces</div>
+      <h3 class="g-h">The 5 Pillars</h3>
+      <p class="g-p">Start here. These form the skeleton of a wardrobe that will serve you for decades.</p>
+      <div class="w-grid">
+        <div class="w-item"><div class="w-num">01</div><div class="w-name">Base Layer</div><div class="w-desc">Merino wool, 200-weight. Year-round temperature regulation.</div></div>
+        <div class="w-item"><div class="w-num">02</div><div class="w-name">Work Trouser</div><div class="w-desc">Heavy duck or ripstop canvas. Reinforced knees. Takes abuse.</div></div>
+        <div class="w-item"><div class="w-num">03</div><div class="w-name">Outer Shell</div><div class="w-desc">Waxed canvas or Gore-Tex. Repellent, breathable, re-waxable.</div></div>
+        <div class="w-item"><div class="w-num">04</div><div class="w-name">Work Boot</div><div class="w-desc">Goodyear welt. Full-grain leather. Re-sole indefinitely.</div></div>
+        <div class="w-item full"><div class="w-num">05</div><div class="w-name">Core Tee</div><div class="w-desc">Long-staple cotton or loopwheel knit. Gets better after 50 washes, not worse.</div></div>
+      </div>
+    </div>
+
+    <div class="guide-block">
+      <div class="g-lbl">Our Standards</div>
+      <h3 class="g-h">How We Select Brands</h3>
+      <p class="g-p">Every brand on Endure passes at least three of these criteria.</p>
+      <div class="crit-list">
+        <div class="crit-item">
+          <div class="crit-ico">◆</div>
+          <div><div class="crit-ttl">Material Quality</div><div class="crit-desc">Natural fibers (merino, cotton, leather, linen) or certified high-performance synthetics. No polyester blends that pill and degrade after 20 washes.</div></div>
+        </div>
+        <div class="crit-item">
+          <div class="crit-ico">◆</div>
+          <div><div class="crit-ttl">Construction Standards</div><div class="crit-desc">Goodyear welt, loopwheel knitting, triple-stitched seams, reinforced stress points. How something is built matters as much as what it's made from.</div></div>
+        </div>
+        <div class="crit-item">
+          <div class="crit-ico">◆</div>
+          <div><div class="crit-ttl">Repair Commitment</div><div class="crit-desc">Brands must offer repair services or lifetime guarantees. If they won't stand behind their product, we won't list it.</div></div>
+        </div>
+        <div class="crit-item">
+          <div class="crit-ico">◆</div>
+          <div><div class="crit-ttl">Price-to-Quality Ratio</div><div class="crit-desc">Premium pricing must be earned. We evaluate CPW and longevity — not sticker shock.</div></div>
+        </div>
+        <div class="crit-item">
+          <div class="crit-ico">◆</div>
+          <div><div class="crit-ttl">Ethical Production</div><div class="crit-desc">Transparency in sourcing, fair labor practices, environmental accountability. B-Corp certification or equivalent standards.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+
+  </section>
+
+</main>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <button class="bnav-item active" data-sec="home" onclick="showSection('home')">
+    <span class="bnav-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </span>
+    Home
+  </button>
+  <button class="bnav-item" data-sec="browse" onclick="showSection('browse')">
+    <span class="bnav-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </span>
+    Browse
+  </button>
+  <button class="bnav-item" data-sec="guide" onclick="showSection('guide')">
+    <span class="bnav-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    </span>
+    Guide
+  </button>
+</nav>
+
+<script>
+// ===== DATA =====
+
+const brands = [
+  {
+    id: 1, name: "Filson", tagline: "Built for the long haul since 1897",
+    origin: "USA", category: "outerwear", founded: "1897",
+    materials: "Waxed Tin Cloth, Rugged Twill",
+    detail: "Oil-finished cotton canvas, Mackinaw wool",
+    durability: 5, price: "$$$$", tier: "investment",
+    badges: ["made-in-usa","repair-program","natural-fibers"],
+    link: "https://www.filson.com",
+    desc: "Seattle-born outfitter making some of the toughest garments in existence. Their Tin Cloth canvas is virtually indestructible and develops rich patina with age."
+  },
+  {
+    id: 2, name: "Patagonia", tagline: "Don't buy what you don't need",
+    origin: "USA", category: "outerwear", founded: "1973",
+    materials: "Recycled Polyester, Organic Cotton",
+    detail: "100% recycled fabrics, GOTS organic cotton",
+    durability: 4, price: "$$$", tier: "mid",
+    badges: ["b-corp","repair-program","natural-fibers"],
+    link: "https://www.patagonia.com",
+    desc: "The original repair-not-replace brand. Worn Wear program accepts any Patagonia item for free repair. B-Corp certified with ironclad environmental commitments."
+  },
+  {
+    id: 3, name: "Darn Tough", tagline: "Unconditional lifetime guarantee",
+    origin: "USA", category: "basics", founded: "2004",
+    materials: "Merino Wool, Nylon Reinforcement",
+    detail: "Fine merino wool, nylon-reinforced heel & toe",
+    durability: 5, price: "$$", tier: "mid",
+    badges: ["lifetime-guarantee","made-in-usa","natural-fibers"],
+    link: "https://www.darntough.com",
+    desc: "Vermont-made merino socks with a no-questions-asked lifetime guarantee. Send back any worn pair, get new ones. They've never waffled on this promise in 20 years."
+  },
+  {
+    id: 4, name: "Outlier", tagline: "Clothes for the post-normal",
+    origin: "USA", category: "basics", founded: "2008",
+    materials: "Proprietary Technical Fabrics",
+    detail: "F.Cloth, Nylon/Merino blends, custom-woven textiles",
+    durability: 4, price: "$$$$", tier: "investment",
+    badges: ["nyc-made"],
+    link: "https://shop.outlier.nyc",
+    desc: "NYC workshop creating technically superior everyday garments. Small-batch, high accountability. Their Futureworks pants have a near-cult following for good reason."
+  },
+  {
+    id: 5, name: "Merz b. Schwanen", tagline: "Loopwheeled for a lifetime",
+    origin: "Germany", category: "basics", founded: "1911",
+    materials: "Loopwheeled Giza Cotton",
+    detail: "Egyptian Giza cotton on vintage 2rpm loopwheel machinery",
+    durability: 5, price: "$$$", tier: "mid",
+    badges: ["made-in-germany","natural-fibers"],
+    link: "https://www.merz-b-schwanen.com",
+    desc: "Reviving 19th-century German knitwear tradition. Slow-knitted loopwheel jersey is softer and more stable than anything made on modern machines."
+  },
+  {
+    id: 6, name: "Icebreaker", tagline: "Nature's performance fabric",
+    origin: "New Zealand", category: "basics", founded: "1994",
+    materials: "ZQ-Certified Merino Wool",
+    detail: "100% ZQ Merino, traceable to NZ source farms",
+    durability: 4, price: "$$$", tier: "mid",
+    badges: ["b-corp","natural-fibers"],
+    link: "https://www.icebreaker.com",
+    desc: "New Zealand merino pioneer. ZQ-certified wool is ethically sourced and fully traceable. The 200-weight base layer is a decade-long wardrobe staple."
+  },
+  {
+    id: 7, name: "Red Wing", tagline: "Better with every mile",
+    origin: "USA", category: "footwear", founded: "1905",
+    materials: "Full-Grain Horween Leather",
+    detail: "Horween leather uppers, cork footbed, Goodyear welt",
+    durability: 5, price: "$$$$", tier: "investment",
+    badges: ["made-in-usa","lifetime-guarantee","repair-program"],
+    link: "https://www.redwingshoes.com",
+    desc: "Minnesota bootmakers since 1905. Goodyear welt means soles are replaceable indefinitely. Expect a 20–30 year lifespan. These boots age beautifully."
+  },
+  {
+    id: 8, name: "Sunspel", tagline: "Quiet luxury in long-staple cotton",
+    origin: "UK", category: "basics", founded: "1860",
+    materials: "Sea Island & Supima Cotton",
+    detail: "Long-staple Sea Island cotton, slow-knit jersey",
+    durability: 4, price: "$$$", tier: "mid",
+    badges: ["made-in-uk","natural-fibers"],
+    link: "https://www.sunspel.com",
+    desc: "British heritage brand making world-class basics since 1860. Their Sea Island cotton tees are so well-constructed they genuinely improve with every wash."
+  },
+  {
+    id: 9, name: "Engineered Garments", tagline: "American workwear, reinterpreted",
+    origin: "USA", category: "workwear", founded: "1999",
+    materials: "Duck Canvas, Ripstop, Harris Tweed",
+    detail: "8oz duck canvas, 6oz ripstop, Harris tweed collaborations",
+    durability: 4, price: "$$$", tier: "mid",
+    badges: ["nyc-made","natural-fibers"],
+    link: "https://engineeredgarments.com",
+    desc: "Daiki Suzuki's NYC workshop reinterprets American workwear with Japanese precision. Deeply considered construction built around utility and long-term wear."
+  },
+  {
+    id: 10, name: "Carhartt WIP", tagline: "Work clothes that outlast the job",
+    origin: "USA", category: "workwear", founded: "1889",
+    materials: "12oz Duck Canvas, 14.5oz Denim",
+    detail: "Triple-stitched duck canvas, heavy selvedge denim",
+    durability: 4, price: "$$", tier: "budget",
+    badges: ["natural-fibers"],
+    link: "https://www.carhartt-wip.com",
+    desc: "The workwear standard bearer since 1889. 12oz duck canvas doubles and triples are legendary for toughness. WIP brings refined fits without sacrificing durability."
+  }
+];
+
+const products = [
+  {
+    brand: "Filson", name: "Tin Cloth Field Jacket",
+    why: "The standard by which all field jackets are judged. Waxed canvas grows more water-resistant with use. Re-wax every few years — this jacket will outlive you.",
+    price: "$495", cpw: "~$0.09/wear over 15 yrs", link: "https://www.filson.com"
+  },
+  {
+    brand: "Darn Tough", name: "Hiker Micro Crew Sock",
+    why: "Lifetime guarantee, no questions asked. Merino naturally resists odour and regulates temperature. The most rational sock purchase you'll ever make.",
+    price: "$26", cpw: "Effectively $0/wear", link: "https://www.darntough.com"
+  },
+  {
+    brand: "Red Wing", name: "Iron Ranger Boot 8111",
+    why: "Goodyear welt construction = re-soleable indefinitely. Full-grain leather develops incredible patina. With proper care, these outlive their owners.",
+    price: "$340", cpw: "~$0.06/wear over 20 yrs", link: "https://www.redwingshoes.com"
+  },
+  {
+    brand: "Merz b. Schwanen", name: "215 Loopwheeled Tee",
+    why: "Slow-knitted at 2rpm on century-old machinery. The resulting fabric has natural elasticity that resists pilling and deformation through years of hard washing.",
+    price: "$115", cpw: "~$0.23/wear over 500 washes", link: "https://www.merz-b-schwanen.com"
+  },
+  {
+    brand: "Icebreaker", name: "200 Oasis Merino LS Crew",
+    why: "The base layer that goes everywhere. Merino self-cleans, self-regulates, and this weight hits the sweet spot between warmth and year-round versatility.",
+    price: "$120", cpw: "~$0.15/wear over 800 days", link: "https://www.icebreaker.com"
+  }
+];
+
+const badgeCfg = {
+  "lifetime-guarantee": { label: "Lifetime Guarantee", cls: "badge-lifetime-guarantee" },
+  "repair-program":     { label: "Repair Program",     cls: "badge-repair-program" },
+  "natural-fibers":     { label: "Natural Fibers",     cls: "badge-natural-fibers" },
+  "made-in-usa":        { label: "Made in USA",        cls: "badge-made-in-usa" },
+  "made-in-uk":         { label: "Made in UK",         cls: "badge-made-in-uk" },
+  "made-in-germany":    { label: "Made in Germany",    cls: "badge-made-in-germany" },
+  "made-in-nz":         { label: "Made in NZ",         cls: "badge-made-in-nz" },
+  "b-corp":             { label: "B-Corp",             cls: "badge-b-corp" },
+  "nyc-made":           { label: "NYC Made",           cls: "badge-nyc-made" }
+};
+
+// ===== RENDER =====
+
+function dura(n) {
+  let h = '<div class="dura">';
+  for (let i = 1; i <= 5; i++) h += `<span class="dia${i <= n ? ' on' : ''}">◆</span>`;
+  h += '<span class="dura-lbl">Durability</span></div>';
+  return h;
+}
+
+function badges(list) {
+  return list.map(b => {
+    const c = badgeCfg[b];
+    return c ? `<span class="badge ${c.cls}">${c.label}</span>` : '';
+  }).join('');
+}
+
+function renderFeat(b) {
+  return `
+    <div class="feat-card" onclick="showSection('browse')" title="View in directory">
+      <div class="feat-card-origin">${b.origin} · Est. ${b.founded}</div>
+      <div class="feat-card-name">${b.name}</div>
+      <div class="feat-card-mat">${b.materials}</div>
+      ${dura(b.durability)}
+    </div>`;
+}
+
+function renderBrand(b) {
+  return `
+    <div class="brand-card">
+      <div class="bc-head">
+        <div class="bc-name">${b.name}</div>
+        <div class="bc-origin">${b.origin}</div>
+      </div>
+      <div class="bc-tagline">${b.tagline}</div>
+      <div class="bc-material"><strong>Material:</strong> ${b.detail}</div>
+      <div class="bc-meta">${dura(b.durability)}<div class="bc-price">${b.price}</div></div>
+      <div class="badge-row">${badges(b.badges)}</div>
+      <a href="${b.link}" class="shop-btn" target="_blank" rel="noopener noreferrer">
+        Shop ${b.name}
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </a>
+    </div>`;
+}
+
+function renderSpot(p) {
+  return `
+    <div class="spot-card">
+      <div>
+        <div class="spot-brand">${p.brand}</div>
+        <div class="spot-name">${p.name}</div>
+        <div class="spot-why">${p.why}</div>
+        <a href="${p.link}" class="spot-link" target="_blank" rel="noopener noreferrer">
+          View Product
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+      </div>
+      <div>
+        <div class="spot-price">${p.price}</div>
+        <div class="spot-cpw">${p.cpw}</div>
+      </div>
+    </div>`;
+}
+
+// ===== INIT =====
+
+function init() {
+  document.getElementById('featScroll').innerHTML = brands.slice(0,5).map(renderFeat).join('');
+  document.getElementById('spotlightWrap').innerHTML = products.map(renderSpot).join('');
+  renderBrandGrid(brands);
+}
+
+function renderBrandGrid(list) {
+  const grid = document.getElementById('brandGrid');
+  const none = document.getElementById('noResults');
+  const cnt  = document.getElementById('browseCount');
+  if (list.length === 0) {
+    grid.innerHTML = '';
+    none.classList.add('show');
+    cnt.textContent = 'No brands match';
+  } else {
+    none.classList.remove('show');
+    grid.innerHTML = list.map(renderBrand).join('');
+    cnt.textContent = `Showing ${list.length} brand${list.length === 1 ? '' : 's'}`;
+  }
+}
+
+// ===== SECTION NAV =====
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById(name + 'Section').classList.add('active');
+  document.querySelector(`[data-sec="${name}"]`).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ===== FILTERS =====
+
+let activeCat   = 'all';
+let activePrice = 'all';
+
+document.addEventListener('click', e => {
+  const cat   = e.target.closest('[data-cat]');
+  const price = e.target.closest('[data-price]');
+  if (cat) {
+    document.querySelectorAll('[data-cat]').forEach(c => c.classList.remove('on'));
+    cat.classList.add('on');
+    activeCat = cat.dataset.cat;
+    applyFilters();
+  }
+  if (price) {
+    document.querySelectorAll('[data-price]').forEach(c => c.classList.remove('on'));
+    price.classList.add('on');
+    activePrice = price.dataset.price;
+    applyFilters();
+  }
+});
+
+function applyFilters() {
+  renderBrandGrid(brands.filter(b =>
+    (activeCat   === 'all' || b.category === activeCat) &&
+    (activePrice === 'all' || b.tier     === activePrice)
+  ));
+}
+
+// ===== SEARCH =====
+
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('show');
+  document.getElementById('searchRes').innerHTML = buildSearchHTML('');
+  setTimeout(() => document.getElementById('searchInp').focus(), 80);
+}
+
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('show');
+  document.getElementById('searchInp').value = '';
+}
+
+function doSearch(q) {
+  document.getElementById('searchRes').innerHTML = buildSearchHTML(q);
+}
+
+function buildSearchHTML(q) {
+  const lq = q.toLowerCase().trim();
+  const res = lq === '' ? brands : brands.filter(b =>
+    b.name.toLowerCase().includes(lq) ||
+    b.materials.toLowerCase().includes(lq) ||
+    b.origin.toLowerCase().includes(lq) ||
+    b.category.toLowerCase().includes(lq) ||
+    b.badges.some(x => x.includes(lq))
+  );
+  if (!res.length) return '<div style="padding:20px 0;font-family:var(--font-display);font-style:italic;font-size:18px;color:var(--text-muted)">Nothing found.</div>';
+  return res.map(b => `
+    <div class="sr-item" onclick="goToBrand(${b.id})">
+      <div>
+        <div class="sr-name">${b.name}</div>
+        <div class="sr-meta">${b.origin} · ${b.category} · ${b.price}</div>
+      </div>
+      <span class="sr-arrow">→</span>
+    </div>`).join('');
+}
+
+function goToBrand(id) {
+  closeSearch();
+  activeCat = 'all'; activePrice = 'all';
+  document.querySelectorAll('[data-cat]').forEach(c => c.classList.toggle('on', c.dataset.cat === 'all'));
+  document.querySelectorAll('[data-price]').forEach(c => c.classList.toggle('on', c.dataset.price === 'all'));
+  renderBrandGrid(brands);
+  showSection('browse');
+  setTimeout(() => {
+    const idx = brands.findIndex(b => b.id === id);
+    const cards = document.querySelectorAll('.brand-card');
+    if (cards[idx]) {
+      cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      cards[idx].style.transition = 'border-color 0.3s';
+      cards[idx].style.borderColor = 'var(--accent)';
+      setTimeout(() => { cards[idx].style.borderColor = ''; }, 2200);
+    }
+  }, 120);
+}
+
+// ===== THEME =====
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const dark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.getElementById('sunIco').style.display  = dark ? '' : 'none';
+  document.getElementById('moonIco').style.display = dark ? 'none' : '';
+  localStorage.setItem('endure-theme', dark ? 'light' : 'dark');
+}
+
+const saved = localStorage.getItem('endure-theme');
+if (saved) {
+  document.documentElement.setAttribute('data-theme', saved);
+  if (saved === 'dark') {
+    document.getElementById('sunIco').style.display  = 'none';
+    document.getElementById('moonIco').style.display = '';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('searchOverlay').classList.contains('show')) closeSearch();
+});
+
+init();
+</script>
+</body>
+</html>
